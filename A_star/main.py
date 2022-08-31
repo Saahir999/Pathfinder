@@ -2,10 +2,11 @@ import sys
 
 
 class Node:
-    def __init__(self, state, action, parent):
+    def __init__(self, state, action, parent, distance):
         self.action = action
         self.state = state
         self.parent = parent
+        self.distance = distance
 
 
 class Stack:
@@ -24,11 +25,18 @@ class Stack:
                 return False
         return True
 
-    def remove_node(self):
+    def remove_node(self,cost):
         if len(self.frontier) == 0:
             raise Exception("empty frontier")
         else:
-            return self.frontier.pop()
+            index = 0
+            min = self.frontier[0].distance
+            for node in self.frontier:
+                if node.distance + cost < min:
+                    min = node.distance + cost
+                    index = self.frontier.index(node)
+                    break
+            return self.frontier.pop(index)
 
 
 class Queue(Stack):
@@ -118,24 +126,32 @@ class NotepadMaze:
 
         return ans
 
+    def dist_from_goal(self, state):
+        i, j = state
+        k, l = self.goal
+
+        return k+l-i-j
+
     def solve(self):
         # set do while with frontier as function
 
         frontier = Stack()
         # frontier = Queue()
 
-        frontier.add_node(node=Node(state=self.start, parent=None, action=None))
-        k = 0
+        cost = 0
+        frontier.add_node(
+            node=Node(state=self.start, parent=None, action=None,
+                      distance=self.dist_from_goal(state=self.start)))
 
         while True:
 
             if not frontier.frontier:
                 break
 
-            k += 1
-            # print(k)
             # print(frontier.frontier)
-            node = frontier.remove_node()
+            node = frontier.remove_node(cost)
+
+            cost += 1
 
             if self.goal == node.state:
                 actions = []
@@ -154,10 +170,10 @@ class NotepadMaze:
                 if frontier.frontier:
                     for fnode in frontier.frontier:
                         if state != fnode.state:
-                            child = Node(state=state, action=action, parent=node)
+                            child = Node(state=state, action=action, parent=node, distance=self.dist_from_goal(state=state))
                             frontier.add_node(child)
                 else:
-                    child = Node(state=state, action=action, parent=node)
+                    child = Node(state=state, action=action, parent=node, distance=self.dist_from_goal(state=state))
                     frontier.add_node(child)
 
             # if frontier is empty, no soln
