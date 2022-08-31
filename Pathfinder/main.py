@@ -16,9 +16,10 @@ class Stack:
     def add_node(self, node):
         if self.search(node=node):
             self.frontier.append(node)
+            self.processed.append(node.state)
 
-    def add_explored(self, node):
-        self.processed.append(node.state)
+    # def add_explored(self, node):
+    #     self.processed.append(node.state)
 
     def search(self, node):
         for pnode in self.processed:
@@ -127,7 +128,7 @@ class NotepadMaze:
         # frontier = Queue()
 
         frontier.add_node(node=Node(state=self.start, parent=None, action=None))
-        frontier.add_explored(node=Node(state=self.start, parent=None, action=None))
+        # frontier.add_explored(node=Node(state=self.start, parent=None, action=None))
         k = 0
 
         while True:
@@ -159,11 +160,11 @@ class NotepadMaze:
                         if state != fnode.state:
                             child = Node(state=state, action=action, parent=node)
                             frontier.add_node(child)
-                            frontier.add_explored(node=child)
+                            # frontier.add_explored(node=child)
                 else:
                     child = Node(state=state, action=action, parent=node)
                     frontier.add_node(child)
-                    frontier.add_explored(node=child)
+                    # frontier.add_explored(node=child)
 
             # if frontier is empty, no soln
             # Remove node from frontier
