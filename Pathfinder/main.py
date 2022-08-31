@@ -136,9 +136,8 @@ class NotepadMaze:
                 break
 
             k += 1
-            print(k)
-            print(frontier.frontier)
-            print(frontier.frontier == [])
+            # print(k)
+            # print(frontier.frontier)
             node = frontier.remove_node()
 
             if self.goal == node.state:
@@ -155,22 +154,14 @@ class NotepadMaze:
                 self.solution = (actions, states)
 
             for action, state in self.neighbours(state=node.state):
-                print("child below")
-                print(state)
-                print(self.start)
-                print(frontier.processed)
                 if frontier.frontier:
                     for fnode in frontier.frontier:
                         if state != fnode.state:
                             child = Node(state=state, action=action, parent=node)
-                            print(child)
-                            print("child above")
                             frontier.add_node(child)
                             frontier.add_explored(node=child)
                 else:
                     child = Node(state=state, action=action, parent=node)
-                    print(child)
-                    print("child above")
                     frontier.add_node(child)
                     frontier.add_explored(node=child)
 
